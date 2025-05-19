@@ -23,7 +23,6 @@
     <h1 class="text-2xl font-bold mb-4">Form Absensi</h1>
     <form id="absensiForm" class="space-y-4 bg-white dark:bg-gray-800 p-6 rounded shadow">
       <input type="hidden" id="editIndex" />
-      <input type="text" id="no" placeholder="No" class="w-full p-2 border rounded dark:bg-gray-700" required />
       <input type="text" id="idPegawai" placeholder="ID Pegawai" class="w-full p-2 border rounded dark:bg-gray-700" required />
       <input type="text" id="namaLengkap" placeholder="Nama Lengkap" class="w-full p-2 border rounded dark:bg-gray-700" required />
       <input type="date" id="tanggal" class="w-full p-2 border rounded dark:bg-gray-700" required />
@@ -41,7 +40,6 @@
       const editIndex = document.getElementById('editIndex').value;
 
       const absensiData = {
-        no: document.getElementById('no').value,
         idPegawai: document.getElementById('idPegawai').value,
         nama: document.getElementById('namaLengkap').value,
         tanggal: document.getElementById('tanggal').value,
