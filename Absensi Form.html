@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Absensi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+  <!-- Header -->
+  <header class="flex justify-between items-center p-4 bg-white dark:bg-gray-800 shadow mb-6">
+    <div class="flex items-center gap-4">
+      <img src="Image/WPP TES ZOOM.PNG" alt="Logo" class="h-20" />
+      <span class="text-xl font-bold text-gray-800 dark:text-white">PT. Wahana Perencana Persada</span>
+    </div>
+    <a href="Database Absensi.html" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded">
+      Database
+    </a>
+  </header>
+
+  <!-- Form Absensi -->
+  <div class="p-6 max-w-3xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4">Form Absensi</h1>
+    <form id="absensiForm" class="space-y-4 bg-white dark:bg-gray-800 p-6 rounded shadow">
+      <input type="hidden" id="editIndex" />
+      <input type="text" id="no" placeholder="No" class="w-full p-2 border rounded dark:bg-gray-700" required />
+      <input type="text" id="idPegawai" placeholder="ID Pegawai" class="w-full p-2 border rounded dark:bg-gray-700" required />
+      <input type="text" id="namaLengkap" placeholder="Nama Lengkap" class="w-full p-2 border rounded dark:bg-gray-700" required />
+      <input type="date" id="tanggal" class="w-full p-2 border rounded dark:bg-gray-700" required />
+      <input type="time" id="jamMasuk" placeholder="Jam Masuk" class="w-full p-2 border rounded dark:bg-gray-700" required />
+      <input type="time" id="jamKeluar" placeholder="Jam Keluar" class="w-full p-2 border rounded dark:bg-gray-700" required />
+      <input type="text" id="keterangan" placeholder="Keterangan" class="w-full p-2 border rounded dark:bg-gray-700" />
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Simpan</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('absensiForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const editIndex = document.getElementById('editIndex').value;
+
+      const absensiData = {
+        no: document.getElementById('no').value,
+        idPegawai: document.getElementById('idPegawai').value,
+        nama: document.getElementById('namaLengkap').value,
+        tanggal: document.getElementById('tanggal').value,
+        jamMasuk: document.getElementById('jamMasuk').value,
+        jamKeluar: document.getElementById('jamKeluar').value,
+        keterangan: document.getElementById('keterangan').value
+      };
+
+      const existingData = JSON.parse(localStorage.getItem('absensiData')) || [];
+
+      if (editIndex) {
+        existingData[editIndex] = absensiData;
+      } else {
+        existingData.push(absensiData);
+      }
+
+      localStorage.setItem('absensiData', JSON.stringify(existingData));
+
+      window.location.href = 'Database Absensi.html';
+    });
+  </script>
+</body>
+</html>

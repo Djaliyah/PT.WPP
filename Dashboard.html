@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PT. Wahana Perencana Persada</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 dark:text-gray-100 transition duration-300">
+
+  <!-- Header -->
+  <header class="flex justify-between items-center p-4 bg-rose-600 text-white shadow">
+    <div class="text-xl font-bold">PT. Wahana Perencana Persada</div>
+    <div class="flex items-center gap-4">
+      <img src="Image/WPP TES ZOOM.PNG" alt="Logo of PT. Wahana Perencana Persada" class="h-14 mx-auto" />
+    </div>
+    <div class="flex items-center gap-4">
+      <button id="toggleTheme" class="px-2 py-1 border border-white rounded" aria-label="Toggle dark/light mode">🌓</button>
+      <img src="https://via.placeholder.com/30" class="rounded-full" alt="Profile" />
+      <button id="logoutButton" class="px-2 py-1 border border-white rounded bg-red-600 hover:bg-red-700">Logout</button>
+    </div>
+  </header>
+
+  <div class="flex">
+    <!-- Sidebar -->
+    <aside class="w-64 min-h-screen bg-gray-500 text-black p-4">
+      <nav>
+        <h2 class="text-lg font-semibold mb-4">Menu</h2>
+        <ul class="space-y-2">
+          <li><a href="#" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-700"><img src="https://img.icons8.com/ios-filled/24/home.png"/> Dashboard</a></li>
+          <li><a href="Absensi Form.html" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-700"><img src="https://img.icons8.com/ios-filled/24/calendar.png"/> Absensi</a></li>
+          <li><a href="Form Lembur.html" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-700"><img src="https://img.icons8.com/ios-filled/24/overtime.png"/> Lembur</a></li>
+          <li><a href="Form Cuti.html" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-700"><img src="https://img.icons8.com/ios-filled/24/beach.png"/> Cuti</a></li>
+        </ul>
+        <h2 class="text-lg font-semibold my-4">Database</h2>
+        <ul class="space-y-2">
+          <li><a href="Database Absensi.html" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-700"><img src="https://img.icons8.com/ios-filled/24/document.png"/> Database Absensi</a></li>
+          <li><a href="Database Lembur.html" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-700"><img src="https://img.icons8.com/ios-filled/24/document.png"/> Database Lembur</a></li>
+          <li><a href="Database Cuti.html" class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-700"><img src="https://img.icons8.com/ios-filled/24/document.png"/> Database Cuti</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+      <section class="bg-white dark:bg-gray-800 rounded shadow p-4">
+        <h3 class="text-lg font-semibold mb-4">Dashboard Rekapitulasi</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="p-6 bg-yellow-100 dark:bg-yellow-300 rounded shadow-sm">
+            <h4 class="font-bold text-lg">Rekapitulasi Kehadiran</h4>
+            <p id="cashDeposits">Memuat data...</p>
+          </div>
+          <div class="p-6 bg-pink-100 dark:bg-pink-300 rounded shadow-sm">
+            <h4 class="font-bold text-lg">Rekapitulasi Lembur</h4>
+            <p id="investedDividends">Memuat data...</p>
+          </div>
+          <div class="p-6 bg-green-100 dark:bg-green-300 rounded shadow-sm">
+            <h4 class="font-bold text-lg">Rekapitulasi Cuti</h4>
+            <p id="capitalGains">Memuat data...</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Toggle dark/light mode
+    document.getElementById('toggleTheme').addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+    });
+
+    async function fetchDashboardData() {
+      try {
+        const response = await fetch('rekap.json');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+
+        document.getElementById('cashDeposits').innerText = data.kehadiran;
+        document.getElementById('investedDividends').innerText = data.lembur;
+        document.getElementById('capitalGains').innerText = data.cuti;
+      } catch (error) {
+        console.error('Gagal mengambil data:', error);
+        document.getElementById('cashDeposits').innerText = 'Gagal memuat data';
+        document.getElementById('investedDividends').innerText = 'Gagal memuat data';
+        document.getElementById('capitalGains').innerText = 'Gagal memuat data';
+      }
+    }
+
+    // Logout functionality
+    document.getElementById('logoutButton').addEventListener('click', () => {
+      // Implement your logout logic here
+      alert('Anda telah logout!');
+      // Redirect to login page or perform other actions
+      window.location.href = 'Index.html'; // Ganti dengan URL halaman login Anda
+    });
+
+    fetchDashboardData();
+  </script>
+</body>
+</html>

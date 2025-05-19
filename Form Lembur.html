@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Lembur - PT. Wahana Perencana Persada</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white">
+  <header class="flex items-center justify-between p-4 bg-white dark:bg-gray-800 shadow">
+    <div class="flex items-center gap-4">
+      <img src="Image/WPP TES ZOOM.PNG" alt="Logo" class="h-20" />
+      <h1 class="text-xl font-bold">PT. Wahana Perencana Persada</h1>
+    </div>
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Dashboard</a>
+  </header>
+
+  <main class="p-6 space-y-6">
+    <section class="bg-white dark:bg-gray-800 rounded shadow p-6">
+      <h2 class="text-2xl font-bold mb-4">Form Lembur</h2>
+      <form id="lemburForm" class="grid grid-cols-1 md:grid-cols-1 gap-4">
+        <input type="text" id="idPegawai" placeholder="ID Pegawai" class="border p-2 rounded" required />
+        <input type="text" id="namaLengkap" placeholder="Nama Lengkap" class="border p-2 rounded" required />
+        <input type="date" id="tanggal" class="border p-2 rounded" required />
+        
+      </form>
+         <form id="lemburForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+         <input type="time" id="jamMulai" class="border p-2 rounded" required />
+         <input type="time" id="jamSelesai" class="border p-2 rounded" required />
+        
+         <form>
+         <form id="lemburForm" class="grid grid-cols-1 md:grid-cols-1 gap-4">
+         <input type="text" id="keterangan" placeholder="Keterangan" class="border p-2 rounded" />
+         <button type="submit" class="col-span-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Simpan</button>
+ 
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('lemburForm');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const newData = {
+        idPegawai: form.idPegawai.value,
+        namaLengkap: form.namaLengkap.value,
+        tanggal: form.tanggal.value,
+        jamMulai: form.jamMulai.value,
+        jamSelesai: form.jamSelesai.value,
+        keterangan: form.keterangan.value
+      };
+
+      let lemburData = JSON.parse(localStorage.getItem('lemburData')) || [];
+      lemburData.push(newData);
+      localStorage.setItem('lemburData', JSON.stringify(lemburData));
+
+      window.location.href = 'database-lembur.html'; // Ganti dengan halaman tujuan
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database Absensi - PT. Wahana Perencana Persada</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+
+  <!-- Header -->
+  <header class="flex justify-between items-center p-4 bg-white dark:bg-gray-800 shadow mb-6">
+    <div class="flex items-center gap-4">
+      <img src="Image/WPP TES ZOOM.PNG" alt="Logo" class="h-20" />
+      <span class="text-xl font-bold text-gray-800 dark:text-white">PT. Wahana Perencana Persada</span>
+    </div>
+    <a href="index.html" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded">
+      Dashboard
+    </a>
+  </header>
+
+  <!-- Filter & Export Import Tools -->
+  <div class="max-w-6xl mx-auto p-6">
+    <div class="flex flex-col md:flex-row gap-4 justify-between items-center mb-4">
+      <input type="text" id="searchInput" placeholder="Cari Nama atau ID Pegawai..." class="px-4 py-2 border rounded w-full md:w-1/3">
+      <div class="flex gap-2">
+        <button id="exportJSON" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Export JSON</button>
+        <button id="exportExcel" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Export Excel</button>
+        <input type="file" id="importInput" accept="application/json, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="hidden">
+        <label for="importInput" class="bg-yellow-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-yellow-600">Import</label>
+      </div>
+    </div>
+
+    <h2 class="text-xl font-bold mb-4">Database Absensi</h2>
+    <table class="w-full table-auto border-collapse bg-white dark:bg-gray-800 rounded shadow">
+      <thead>
+        <tr class="bg-gray-200 dark:bg-gray-700">
+          <th class="border px-4 py-2">No</th>
+          <th class="border px-4 py-2">ID Pegawai</th>
+          <th class="border px-4 py-2">Nama</th>
+          <th class="border px-4 py-2">Tanggal</th>
+          <th class="border px-4 py-2">Jam Masuk</th>
+          <th class="border px-4 py-2">Jam Keluar</th>
+          <th class="border px-4 py-2">Keterangan</th>
+          <th class="border px-4 py-2">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="absensiTableBody">
+        <!-- Data dinamis -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const tableBody = document.getElementById('absensiTableBody');
+    const searchInput = document.getElementById('searchInput');
+    const exportJSONBtn = document.getElementById('exportJSON');
+    const exportExcelBtn = document.getElementById('exportExcel');
+    const importInput = document.getElementById('importInput');
+
+    function getData() {
+      return JSON.parse(localStorage.getItem('absensiData')) || [];
+    }
+
+    function saveData(data) {
+      localStorage.setItem('absensiData', JSON.stringify(data));
+    }
+
+    function renderTable(data) {
+      tableBody.innerHTML = '';
+      data.forEach((item, index) => {
+        const row = `
+          <tr>
+            <td class="border px-4 py-2">${item.no}</td>
+            <td class="border px-4 py-2">${item.idPegawai}</td>
+            <td class="border px-4 py-2">${item.nama}</td>
+            <td class="border px-4 py-2">${item.tanggal}</td>
+            <td class="border px-4 py-2">${item.jamMasuk}</td>
+            <td class="border px-4 py-2">${item.jamKeluar}</td>
+            <td class="border px-4 py-2">${item.keterangan}</td>
+            <td class="border px-4 py-2 space-x-2">
+              <button onclick="editData(${index})" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded">Edit</button>
+              <button onclick="deleteData(${index})" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">Hapus</button>
+            </td>
+          </tr>
+        `;
+        tableBody.insertAdjacentHTML('beforeend', row);
+      });
+    }
+
+    function loadAbsensi() {
+      const data = getData();
+      renderTable(data);
+    }
+
+    function editData(index) {
+      window.location.href = `index.html?edit=${index}`;
+    }
+
+    function deleteData(index) {
+      if (confirm('Yakin ingin menghapus data ini?')) {
+        const data = getData();
+        data.splice(index, 1);
+        saveData(data);
+        loadAbsensi();
+      }
+    }
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase();
+      const data = getData();
+      const filtered = data.filter(item =>
+        item.nama.toLowerCase().includes(query) ||
+        item.idPegawai.toLowerCase().includes(query)
+      );
+      renderTable(filtered);
+    });
+
+    exportJSONBtn.addEventListener('click', () => {
+      const data = getData();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'absensiData.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
+
+    exportExcelBtn.addEventListener('click', () => {
+      const data = getData();
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Absensi');
+      XLSX.writeFile(workbook, 'absensiData.xlsx');
+    });
+
+    importInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const ext = file.name.split('.').pop();
+        try {
+          if (ext === 'json') {
+            const importedData = JSON.parse(event.target.result);
+            saveData(importedData);
+            loadAbsensi();
+          } else if (ext === 'xlsx') {
+            const workbook = XLSX.read(event.target.result, { type: 'binary' });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const importedData = XLSX.utils.sheet_to_json(worksheet);
+            saveData(importedData);
+            loadAbsensi();
+          } else {
+            alert('Format file tidak didukung');
+          }
+        } catch (error) {
+          alert('Gagal mengimpor data: ' + error.message);
+        }
+      };
+      if (file.name.endsWith('.xlsx')) {
+        reader.readAsBinaryString(file);
+      } else {
+        reader.readAsText(file);
+      }
+    });
+
+    loadAbsensi();
+  </script>
+</body>
+</html>

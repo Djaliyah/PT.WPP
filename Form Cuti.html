@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Cuti - PT. Wahana Perencana Persada</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white">
+  <header class="flex items-center justify-between p-4 bg-white dark:bg-gray-800 shadow">
+    <div class="flex items-center gap-4">
+      <img src="Image/WPP TES ZOOM.PNG" alt="Logo" class="h-20" />
+      <h1 class="text-xl font-bold">PT. Wahana Perencana Persada</h1>
+    </div>
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Dashboard</a>
+  </header>
+
+  <main class="p-6 space-y-6">
+    <section class="bg-white dark:bg-gray-800 rounded shadow p-6">
+      <h2 class="text-2xl font-bold mb-4">Form Cuti</h2>
+      <form id="cutiForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" id="idPegawai" placeholder="ID Pegawai" class="border p-2 rounded" required />
+        <input type="text" id="namaLengkap" placeholder="Nama Lengkap" class="border p-2 rounded" required />
+        <input type="date" id="tanggalMulai" class="border p-2 rounded" required />
+        <input type="date" id="tanggalSelesai" class="border p-2 rounded" required />
+        <input type="text" id="jenisCuti" placeholder="Jenis Cuti" class="border p-2 rounded" required />
+        <input type="text" id="keterangan" placeholder="Keterangan" class="border p-2 rounded" />
+        <button type="submit" class="col-span-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Simpan</button>
+        <input type="hidden" id="editIndex">
+      </form>
+    </section>
+
+    <section class="bg-white dark:bg-gray-800 rounded shadow p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">Data Cuti</h2>
+        <div class="flex gap-2">
+          <input type="text" id="searchInput" placeholder="Cari nama..." class="border p-2 rounded w-64" />
+          <input type="file" id="importFile" class="hidden" />
+          <button onclick="document.getElementById('importFile').click()" class="bg-yellow-600 text-white px-4 py-2 rounded">Import</button>
+          <button onclick="exportExcel()" class="bg-blue-600 text-white px-4 py-2 rounded">Export</button>
+        </div>
+      </div>
+      <table class="min-w-full table-auto border border-gray-300 dark:border-gray-600">
+        <thead class="bg-gray-200 dark:bg-gray-700">
+          <tr>
+            <th class="border px-4 py-2">No</th>
+            <th class="border px-4 py-2">ID Pegawai</th>
+            <th class="border px-4 py-2">Nama</th>
+            <th class="border px-4 py-2">Tanggal Mulai</th>
+            <th class="border px-4 py-2">Tanggal Selesai</th>
+            <th class="border px-4 py-2">Jenis Cuti</th>
+            <th class="border px-4 py-2">Keterangan</th>
+            <th class="border px-4 py-2">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="cutiTableBody" class="text-center"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    const cutiForm = document.getElementById('cutiForm');
+    const cutiTableBody = document.getElementById('cutiTableBody');
+    const searchInput = document.getElementById('searchInput');
+    const importFile = document.getElementById('importFile');
+    let dataCuti = JSON.parse(localStorage.getItem('cutiData')) || [];
+
+    function renderTable(filter = '') {
+      cutiTableBody.innerHTML = '';
+      dataCuti.forEach((item, index) => {
+        if (!item.namaLengkap.toLowerCase().includes(filter.toLowerCase())) return;
+        const row = `<tr>
+          <td class="border px-4 py-2">${index + 1}</td>
+          <td class="border px-4 py-2">${item.idPegawai}</td>
+          <td class="border px-4 py-2">${item.namaLengkap}</td>
+          <td class="border px-4 py-2">${item.tanggalMulai}</td>
+          <td class="border px-4 py-2">${item.tanggalSelesai}</td>
+          <td class="border px-4 py-2">${item.jenisCuti}</td>
+          <td class="border px-4 py-2">${item.keterangan}</td>
+          <td class="border px-4 py-2 space-x-2">
+            <button onclick="editCuti(${index})" class="bg-yellow-400 text-white px-2 py-1 rounded">Edit</button>
+            <button onclick="hapusCuti(${index})" class="bg-red-500 text-white px-2 py-1 rounded">Hapus</button>
+          </td>
+        </tr>`;
+        cutiTableBody.insertAdjacentHTML('beforeend', row);
+      });
+    }
+
+    cutiForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const index = document.getElementById('editIndex').value;
+      const cutiData = {
+        idPegawai: document.getElementById('idPegawai').value,
+        namaLengkap: document.getElementById('namaLengkap').value,
+        tanggalMulai: document.getElementById('tanggalMulai').value,
+        tanggalSelesai: document.getElementById('tanggalSelesai').value,
+        jenisCuti: document.getElementById('jenisCuti').value,
+        keterangan: document.getElementById('keterangan').value
+      };
+
+      if (index === '') {
+        dataCuti.push(cutiData);
+      } else {
+        dataCuti[index] = cutiData;
+        document.getElementById('editIndex').value = '';
+      }
+
+      localStorage.setItem('cutiData', JSON.stringify(dataCuti));
+      renderTable(searchInput.value);
+      cutiForm.reset();
+    });
+
+    function hapusCuti(index) {
+      if (confirm('Yakin ingin menghapus data ini?')) {
+        dataCuti.splice(index, 1);
+        localStorage.setItem('cutiData', JSON.stringify(dataCuti));
+        renderTable(searchInput.value);
+      }
+    }
+
+    function editCuti(index) {
+      const item = dataCuti[index];
+      document.getElementById('idPegawai').value = item.idPegawai;
+      document.getElementById('namaLengkap').value = item.namaLengkap;
+      document.getElementById('tanggalMulai').value = item.tanggalMulai;
+      document.getElementById('tanggalSelesai').value = item.tanggalSelesai;
+      document.getElementById('jenisCuti').value = item.jenisCuti;
+      document.getElementById('keterangan').value = item.keterangan;
+      document.getElementById('editIndex').value = index;
+    }
+
+    searchInput.addEventListener('input', () => renderTable(searchInput.value));
+
+    importFile.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const imported = XLSX.utils.sheet_to_json(sheet);
+        dataCuti = imported;
+        localStorage.setItem('cutiData', JSON.stringify(dataCuti));
+        renderTable(searchInput.value);
+      };
+      reader.readAsArrayBuffer(file);
+    });
+
+    function exportExcel() {
+      const ws = XLSX.utils.json_to_sheet(dataCuti);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Cuti');
+      XLSX.writeFile(wb, 'data_cuti.xlsx');
+    }
+
+    renderTable();
+  </script>
+</body>
+</html>
