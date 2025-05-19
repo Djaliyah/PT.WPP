@@ -18,25 +18,63 @@
   <main class="p-6 space-y-6">
     <section class="bg-white dark:bg-gray-800 rounded shadow p-6">
       <h2 class="text-2xl font-bold mb-4">Form Lembur</h2>
-      <form id="lemburForm" class="grid grid-cols-1 md:grid-cols-1 gap-4">
-        <input type="text" id="idPegawai" placeholder="ID Pegawai" class="border p-2 rounded" required />
-        <input type="text" id="namaLengkap" placeholder="Nama Lengkap" class="border p-2 rounded" required />
+      <form id="lemburForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <select id="idPegawai" class="border p-2 rounded" required>
+          <option value="">Pilih ID Pegawai</option>
+        </select>
+        <input type="text" id="namaLengkap" placeholder="Nama Lengkap" class="border p-2 rounded" readonly required />
         <input type="date" id="tanggal" class="border p-2 rounded" required />
-        
+        <input type="time" id="jamMulai" class="border p-2 rounded" required />
+        <input type="time" id="jamSelesai" class="border p-2 rounded" required />
+        <input type="text" id="keterangan" placeholder="Keterangan" class="col-span-full border p-2 rounded" />
+        <button type="submit" class="col-span-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Simpan</button>
       </form>
-         <form id="lemburForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-         <input type="time" id="jamMulai" class="border p-2 rounded" required />
-         <input type="time" id="jamSelesai" class="border p-2 rounded" required />
-        
-         <form>
-         <form id="lemburForm" class="grid grid-cols-1 md:grid-cols-1 gap-4">
-         <input type="text" id="keterangan" placeholder="Keterangan" class="border p-2 rounded" />
-         <button type="submit" class="col-span-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Simpan</button>
- 
     </section>
   </main>
 
   <script>
+    const karyawanList = [
+      { id: '1001', nama: 'Ida I Dewa Gede Wirawijaya' },
+      { id: '1002', nama: 'Intan Lina Andriani' },
+      { id: '1003', nama: 'Ariella Claresta' },
+      { id: '1009', nama: 'Sena Maulana Sidiq' },
+      { id: '1010', nama: 'Gilang Prima Irvana' },
+      { id: '1011', nama: 'Inggun Adiyatna' },
+      { id: '1013', nama: 'Alvin Kurniawan' },
+      { id: '1015', nama: 'Muhammad Rahdea S' },
+      { id: '1018', nama: 'Fadhi Naufal Sunardi' },
+      { id: '1022', nama: 'Sabdhanu Dunota' },
+      { id: '1024', nama: 'Angga Nugraha' },
+      { id: '1026', nama: 'Wigiantara Nugraha' },
+      { id: '1027', nama: 'Dea Annisa' },
+      { id: '1028', nama: 'Toni Hamdani' },
+      { id: '1029', nama: 'Riki Nugraha' },
+      { id: '1030', nama: 'Siti Yulianti Maulani' },
+      { id: '1032', nama: 'Andika' },
+      { id: '1033', nama: 'Yasmin Jihan Fahira S.' },
+      { id: '1035', nama: 'Erwin' },
+      { id: '1036', nama: 'Yosep Paturohman' },
+      { id: '1038', nama: 'Restu Afrianto' },
+      { id: '1039', nama: 'Syifa Fauziyah' },
+      { id: '1040', nama: 'Reva Gunawan' },
+      { id: '1043', nama: 'Muhamad Rizki Pratama' },
+      { id: '1044', nama: 'Mohamad Kholilulloh' },
+      { id: '1045', nama: 'Shafira Ahmad' }
+    ];
+
+    const selectId = document.getElementById('idPegawai');
+    karyawanList.forEach(k => {
+      const option = document.createElement('option');
+      option.value = k.id;
+      option.textContent = `${k.id} - ${k.nama}`;
+      selectId.appendChild(option);
+    });
+
+    selectId.addEventListener('change', function () {
+      const selected = karyawanList.find(k => k.id === this.value);
+      document.getElementById('namaLengkap').value = selected ? selected.nama : '';
+    });
+
     const form = document.getElementById('lemburForm');
 
     form.addEventListener('submit', e => {
@@ -54,7 +92,7 @@
       lemburData.push(newData);
       localStorage.setItem('lemburData', JSON.stringify(lemburData));
 
-      window.location.href = 'database-lembur.html'; // Ganti dengan halaman tujuan
+      window.location.href = 'database-lembur.html';
     });
   </script>
 </body>
