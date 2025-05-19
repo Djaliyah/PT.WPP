@@ -43,11 +43,33 @@
 
   <script>
     const karyawanList = [
-      { id: 'K001', nama: 'Andi Saputra' },
-      { id: 'K002', nama: 'Siti Aminah' },
-      { id: 'K003', nama: 'Budi Santoso' },
-      { id: 'K004', nama: 'Rina Marlina' }
-    ];
+  { id: '1001', nama: 'Ida I Dewa Gede Wirawijaya' },
+  { id: '1002', nama: 'Intan Lina Andriani' },
+  { id: '1003', nama: 'Ariella Claresta' },
+  { id: '1009', nama: 'Sena Maulana Sidiq' },
+  { id: '1010', nama: 'Gilang Prima Irvana' },
+  { id: '1011', nama: 'Inggun Adiyatna' },
+  { id: '1013', nama: 'Alvin Kurniawan' },
+  { id: '1015', nama: 'Muhammad Rahdea S' },
+  { id: '1018', nama: 'Fadhi Naufal Sunardi' },
+  { id: '1022', nama: 'Sabdhanu Dunota' },
+  { id: '1024', nama: 'Angga Nugraha' },
+  { id: '1026', nama: 'Wigiantara Nugraha' },
+  { id: '1027', nama: 'Dea Annisa' },
+  { id: '1028', nama: 'Toni Hamdani' },
+  { id: '1029', nama: 'Riki Nugraha' },
+  { id: '1030', nama: 'Siti Yulianti Maulani' },
+  { id: '1032', nama: 'Andika' },
+  { id: '1033', nama: 'Yasmin Jihan Fahira S.' },
+  { id: '1035', nama: 'Erwin' },
+  { id: '1036', nama: 'Yosep Paturohman' },
+  { id: '1038', nama: 'Restu Afrianto' },
+  { id: '1039', nama: 'Syifa Fauziyah' },
+  { id: '1040', nama: 'Reva Gunawan' },
+  { id: '1043', nama: 'Muhamad Rizki Pratama' },
+  { id: '1044', nama: 'Mohamad Kholilulloh' },
+  { id: '1045', nama: 'Shafira Ahmad' }
+];
 
     const selectId = document.getElementById('idPegawai');
     karyawanList.forEach(k => {
@@ -68,9 +90,7 @@
       const editIndex = document.getElementById('editIndex').value;
 
       const absensiData = {
-        no: document.getElementById('no').value,
         idPegawai: document.getElementById('idPegawai').value,
-        nama: document.getElementById('namaLengkap').value,
         tanggal: document.getElementById('tanggal').value,
         jamMasuk: document.getElementById('jamMasuk').value,
         jamKeluar: document.getElementById('jamKeluar').value,
